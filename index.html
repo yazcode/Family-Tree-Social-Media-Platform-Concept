@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FamilyTree - Connect with Your Roots</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3a4f66;
+            --secondary: #f8f9fa;
+            --accent: #e67e22;
+            --text: #333;
+            --light: #fff;
+            --shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            --page-padding: 2rem;
+        }
+
+        body {
+            background-color: #f5f7f9;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--primary);
+            color: var(--light);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .logo a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--light);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #d35400;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--light);
+        }
+
+        .btn-outline:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3rem 0;
+            gap: 2rem;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Family Tree Demo */
+        .tree-demo {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .tree-demo h2 {
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .tree-container {
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .tree-node {
+            background: var(--primary);
+            color: var(--light);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 1rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tree-node:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .tree-node .name {
+            font-weight: 600;
+        }
+
+        .tree-node .relation {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Profile Page */
+        .profile-header {
+            display: flex;
+            gap: 2rem;
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary);
+        }
+
+        .profile-info h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Memories Page */
+        .memory-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--light);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .memory-card {
+            background: var(--light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .memory-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .memory-content {
+            padding: 1rem;
+        }
+
+        .memory-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--light);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--light);
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                gap: 0.5rem;
+            }
+            
+            .tree-level {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tree-node {
+                margin: 0.5rem 0;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-tree"></i>
+            <a href="#" class="nav-link" data-page="home">FamilyTree</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                <li><a href="#" class="nav-link" data-page="family-tree">My Family</a></li>
+                <li><a href="#" class="nav-link" data-page="profile">Profile</a></li>
+                <li><a href="#" class="nav-link" data-page="memories">Memories</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <button class="btn btn-outline">Log In</button>
+            <button class="btn btn-primary">Sign Up</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Connect with Your Family Like Never Before</h1>
+                    <p>FamilyTree is a social platform dedicated to helping you build, visualize, and share your family history with those who matter most.</p>
+                    <button class="btn btn-primary">Start Your Family Tree</button>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1531973576160-7125cd663d86?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Family tree illustration">
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features">
+                <div class="feature-card">
+                    <i class="fas fa-network-wired"></i>
+                    <h3>Build Your Tree</h3>
+                    <p>Create and visualize your family connections with our intuitive tree builder.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Connect Relatives</h3>
+                    <p>Invite family members to contribute to and expand your family tree.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-photo-video"></i>
+                    <h3>Share Memories</h3>
+                    <p>Upload and share photos, stories, and important family milestones.</p>
+                </div>
+            </section>
+
+            <!-- Family Tree Demo -->
+            <section class="tree-demo">
+                <h2>Visualize Your Family Connections</h2>
+                <div class="tree-container">
+                    <div class="tree">
+                        <!-- First Level -->
+                        <div class="tree-level">
+                            <div class="tree-node">
+                                <span class="name">You</span>
+                                <span class="relation">Self</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Second Level -->
+                        <div class="tree-level">
+                            <div class="tree-node">
+                                <span class="name">Parent 1</span>
+                                <span class="relation">Mother</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">Parent 2</span>
+                                <span class="relation">Father</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Third Level -->
+                        <div class="tree-level">
+                            <div class="tree-node">
+                                <span class="name">Grandparent 1</span>
+                                <span class="relation">Maternal Grandma</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">Grandparent 2</span>
+                                <span class="relation">Maternal Grandpa</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">Grandparent 3</span>
+                                <span class="relation">Paternal Grandma</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">Grandparent 4</span>
+                                <span class="relation">Paternal Grandpa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Family Tree Page -->
+        <div id="family-tree" class="page">
+            <h1>Your Family Tree</h1>
+            <p>Explore and manage your family connections</p>
+            
+            <div class="tree-demo">
+                <h2>The Johnson Family</h2>
+                <div class="tree-container">
+                    <div class="tree">
+                        <!-- First Level -->
+                        <div class="tree-level">
+                            <div class="tree-node">
+                                <span class="name">You</span>
+                                <span class="relation">Self</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Second Level -->
+                        <div class="tree-level">
+                            <div class="tree-node">
+                                <span class="name">Mary</span>
+                                <span class="relation">Mother</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">John</span>
+                                <span class="relation">Father</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Third Level -->
+                        <div class="tree-level">
+                            <div class="tree-node">
+                                <span class="name">Elizabeth</span>
+                                <span class="relation">Maternal Grandma</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">Robert</span>
+                                <span class="relation">Maternal Grandpa</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">Margaret</span>
+                                <span class="relation">Paternal Grandma</span>
+                            </div>
+                            <div class="tree-node">
+                                <span class="name">Richard</span>
+                                <span class="relation">Paternal Grandpa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-user-plus"></i>
+                    <h3>Add Relative</h3>
+                    <p>Add new family members to your tree</p>
+                    <button class="btn btn-primary">Add</button>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-share-alt"></i>
+                    <h3>Share Tree</h3>
+                    <p>Invite family members to view your tree</p>
+                    <button class="btn btn-primary">Share</button>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-history"></i>
+                    <h3>View History</h3>
+                    <p>Explore your family's historical timeline</p>
+                    <button class="btn btn-primary">Explore</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile" class="page">
+            <div class="profile-header">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" alt="Profile picture" class="profile-pic">
+                <div class="profile-info">
+                    <h2>Sarah Johnson</h2>
+                    <p>Member since: January 2020</p>
+                    <p>Family: Johnson Family Tree</p>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-value">42</div>
+                            <div class="stat-label">Relatives</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">127</div>
+                            <div class="stat-label">Memories</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">16</div>
+                            <div class="stat-label">Events</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Your Recent Activity</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-plus"></i>
+                    <h3>Added new relative</h3>
+                    <p>You added Uncle James to your family tree</p>
+                    <p class="memory-date">2 days ago</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-camera"></i>
+                    <h3>Uploaded photo</h3>
+                    <p>You added a new photo to Family Reunion 2023</p>
+                    <p class="memory-date">5 days ago</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-tree"></i>
+                    <h3>Expanded tree</h3>
+                    <p>You added 3 new relatives to your tree</p>
+                    <p class="memory-date">1 week ago</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Memories Page -->
+        <div id="memories" class="page">
+            <h1>Family Memories</h1>
+            <p>Relive your cherished family moments</p>
+
+            <div class="memory-filters">
+                <button class="filter-btn active">All Memories</button>
+                <button class="filter-btn">Photos</button>
+                <button class="filter-btn">Videos</button>
+                <button class="filter-btn">Stories</button>
+                <button class="filter-btn">Events</button>
+            </div>
+
+            <div class="memory-grid">
+                <div class="memory-card">
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80" alt="Family reunion" class="memory-img">
+                    <div class="memory-content">
+                        <h3>Family Reunion 2023</h3>
+                        <p>Annual Johnson family gathering at the lake house</p>
+                        <p class="memory-date">July 15, 2023</p>
+                    </div>
+                </div>
+                <div class="memory-card">
+                    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80" alt="Wedding" class="memory-img">
+                    <div class="memory-content">
+                        <h3>Sarah's Wedding</h3>
+                        <p>Beautiful ceremony at the countryside vineyard</p>
+                        <p class="memory-date">May 20, 2023</p>
+                    </div>
+                </div>
+                <div class="memory-card">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80" alt="Birthday" class="memory-img">
+                    <div class="memory-content">
+                        <h3>Grandpa's 80th Birthday</h3>
+                        <p>Surprise party with all the family</p>
+                        <p class="memory-date">March 5, 2023</p>
+                    </div>
+                </div>
+                <div class="memory-card">
+                    <img src="https://images.unsplash.com/photo-1549056572-75914d6d7e1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80" alt="Christmas" class="memory-img">
+                    <div class="memory-content">
+                        <h3>Christmas 2022</h3>
+                        <p>Holiday celebration with traditional family recipes</p>
+                        <p class="memory-date">December 25, 2022</p>
+                    </div>
+                </div>
+                <div class="memory-card">
+                    <img src="https://images.unsplash.com/photo-1526662092590-e314cbeaf8da?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80" alt="New baby" class="memory-img">
+                    <div class="memory-content">
+                        <h3>Welcome Baby Alex</h3>
+                        <p>Newest addition to the Johnson family</p>
+                        <p class="memory-date">October 10, 2022</p>
+                    </div>
+                </div>
+                <div class="memory-card">
+                    <img src="httpsimages.unsplash.com/photo-1465495976277-4387d4b0b4c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80" alt="Vacation" class="memory-img">
+                    <div class="memory-content">
+                        <h3>Family Beach Vacation</h3>
+                        <p>One week in Hawaii with all the cousins</p>
+                        <p class="memory-date">August 3, 2022</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>FamilyTree</h3>
+                <p>Connecting families through technology and shared history.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#" class="nav-link" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="family-tree">My Family</a></li>
+                    <li><a href="#" class="nav-link" data-page="profile">Profile</a></li>
+                    <li><a href="#" class="nav-link" data-page="memories">Memories</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Tutorials</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 FamilyTree. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Page Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Hide all pages
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                
+                // Show the selected page
+                const pageId = this.getAttribute('data-page');
+                document.getElementById(pageId).classList.add('active');
+            });
+        });
+
+        // Simple interactivity for the family tree nodes
+        document.querySelectorAll('.tree-node').forEach(node => {
+            node.addEventListener('click', function() {
+                alert('You clicked on: ' + this.querySelector('.name').textContent + 
+                      '\nRelation: ' + this.querySelector('.relation').textContent);
+            });
+        });
+
+        // Button click handlers
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            if (button.textContent === 'Sign Up' || button.textContent === 'Start Your Family Tree') {
+                button.addEventListener('click', function() {
+                    alert('Welcome to FamilyTree! Sign up functionality would go here.');
+                });
+            }
+        });
+
+        document.querySelector('.btn-outline').addEventListener('click', function() {
+            alert('Login functionality would go here.');
+        });
+
+        // Filter buttons on memories page
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
